@@ -353,8 +353,6 @@ select sourcedb, T_ID, P_ID from FACT_STAGE;
 
 COMMIT;
 
-
-
 /*  Dimensional Model Stage */
 
 /* DIMENSIONAL MODEL */

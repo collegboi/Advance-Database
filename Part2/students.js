@@ -99,4 +99,43 @@ db.students.find({course: {$elemMatch: {mark: {'$gte':40}  }}});
 
 db.students.aggregate( { { $unwind: "$course" },"$group": { name: "$first", averagemark: { $avg: "$course.mark"}}});
 
+db.students.aggregate([
+	{ 
+		{ $unwind: "$course" },
+		
+		{ $group : 
+			{ 
+				_id: "$_id", 
+				avgAge : {  
+					$avg : "$course.mark"  
+				}
+				
+			}
+	},
+	{ 
+		$sort: { 
+			total: -1 
+		} 
+	}
+ ]);
+
+
+db.students.aggregate([
+	{ $unwind : "$course" },
+	{ 
+		$group: { 
+			_id: "$_id", 
+			avgAge: { 
+				$avg: "$course.mark" 
+			}
+		}
+	},
+	{ 
+		$sort: { 
+			total: -1 
+		} 
+	},
+	{ $limit : 1 }
+ ]);
+
 db.students.aggregate([{ $unwind: "$course" },{ $group : { _id: "$_id", avgAge : {  $avg : "$course.mark" }, max : {  $max : "$course.mark" } } }]);
