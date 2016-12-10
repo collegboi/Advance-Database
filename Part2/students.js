@@ -24,6 +24,7 @@ db.students.insert({
 		}
 	]
 });
+
 db.students.insert({
 	name: 'bill',
 	surname: 'bellichick',
@@ -97,14 +98,56 @@ db.students.insert({
 db.students.find({course: {$elemMatch: {mark: {'$lt':40} }}});
 db.students.find({course: {$elemMatch: {mark: {'$gte':40}  }}});
 
-db.students.aggregate( { { $unwind: "$course" },"$group": { name: "$first", averagemark: { $avg: "$course.mark"}}});
+
+//Question 1
+db.students.aggregate([
+	{
+		$unwind : "$course"
+	},
+	{
+		$gte : 40
+	},
+	{
+		$out : "students_failed"
+	}
+]);
+
+//Question 2
+db.students.aggregate([
+	{
+		$unwind : "$course"
+	},
+	{
+		$lt : 40
+	},
+	{
+		$out : "students_failed"
+	}
+]);
+
+db.students.aggregate([  
+    { 
+		$unwind: "$course" 
+	},
+    { 
+    	$group: { 
+        	name: "$first", 
+        	averagemark: { 
+          		$avg: "$course.mark"
+       		}
+      	}
+    },
+	{
+		$out : "average_course_mark"
+	}
+]);
 
 db.students.aggregate([
 	{ 
-		{ $unwind: "$course" },
-		
-		{ $group : 
-			{ 
+		$unwind: "$course" 
+	},
+	{ 
+		$group : { 
 				_id: "$_id", 
 				avgAge : {  
 					$avg : "$course.mark"  
@@ -115,13 +158,16 @@ db.students.aggregate([
 	{ 
 		$sort: { 
 			total: -1 
-		} 
-	}
- ]);
+		}
+	} 
+]);
 
 
+//Question 3
 db.students.aggregate([
-	{ $unwind : "$course" },
+	{ 
+		$unwind : "$course" 
+	},
 	{ 
 		$group: { 
 			_id: "$_id", 
@@ -135,7 +181,9 @@ db.students.aggregate([
 			total: -1 
 		} 
 	},
-	{ $limit : 1 }
+	{ 
+		$limit : 1 
+	}
  ]);
 
 db.students.aggregate([{ $unwind: "$course" },{ $group : { _id: "$_id", avgAge : {  $avg : "$course.mark" }, max : {  $max : "$course.mark" } } }]);

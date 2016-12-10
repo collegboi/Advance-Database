@@ -1,5 +1,5 @@
-Question 1
-----------
+//Question 1
+//----------
 
 CREATE (e1:Person { name: "Tom", country: "Spain", age: 28, sport: "football" });
 CREATE (e2:Person { name: "Bill", country: "Ireland", age: 23, sport: "" });
@@ -65,8 +65,8 @@ MATCH (fb:Person) WHERE fb.sport = 'Football' RETURN fb
 UNION
 MATCH (e:Person {name:"Mary"})-[:FRIEND_OF*1..5]->(fb) RETURN fb;
 
-Question 2
-----------
+//Question 2
+//----------
 
 
 CREATE (a1:Airport { city: "dublin", country: "ireland", code: "dub" }),

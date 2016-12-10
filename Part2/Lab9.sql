@@ -399,15 +399,14 @@ CONSTRAINT  FK_dimdate FOREIGN KEY (date_sk) REFERENCES DimDate,
 CONSTRAINT PK_factresults PRIMARY KEY (p_sk,t_sk,to_sk,date_sk)
 );
 
-
 insert into fact_results select p_sk,t_sk,to_sk,date_sk, rank, price from fact_stage where
 NOT EXISTS (SELECT * FROM fact_results fs
               WHERE  fact_stage.p_sk= fs.p_sk and fact_stage.t_sk= fs.t_sk 
               and fact_stage.to_sk= fs.to_sk and fact_stage.to_sk= fs.date_sk
               and fact_stage.rank= fs.rank and fact_stage.price= fs.price);  /* updating only new entities */
               
-              
-insert into DimPlayer select p_sk, p_name, ps_name from PLAYERS_STAGE;
+insert into DimPlayer select p_sk, p_name, ps_name from PLAYERS_STAGE PS WHERE NOT EXIST (
+SELECT * FROM DimPlayer DP WHERE PS.p_name = DP.p_name and PS.ps_name = DP.ps_name);
 
 insert into DimTeam select t_sk, t_name from TEAMS_STAGE;
 
@@ -415,5 +414,18 @@ insert into DimTournament select to_sk, TO_DESCRIPRION, to_total_price from TOUR
 
 insert into DimDate select date_sk, day_value, month_value,year_value,querter_value, week_day_value from DATE_STAGE;
               
-
 select * from fact_results;
+
+--Part 2
+
+INSERT INTO PLAYERS1 (P_ID, P_NAME, P_SNAME, TEAM_ID) VALUES (7, 'Alan', 'Parker', 1); 
+INSERT INTO PLAYERS1 (P_ID, P_NAME, P_SNAME, TEAM_ID) VALUES (8, 'Martha', 'Bag', 2);
+
+INSERT INTO TOURNAMENT1 (T_ID, T_DESCRIPRION, TOTAL_PRICE) VALUES (5, 'Saudi Open', 500000);
+
+INSERT INTO RESULTS1 (T_ID, P_ID, RANK, PRICE) VALUES (5, 1, 1, 60000); 
+INSERT INTO RESULTS1 (T_ID, P_ID, RANK, PRICE) VALUES (5, 7, 5, 20000); 
+INSERT INTO RESULTS1 (T_ID, P_ID, RANK, PRICE) VALUES (2, 8, 3, 1000);
+
+
+
